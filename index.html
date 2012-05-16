@@ -1,0 +1,211 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" dir="ltr" lang="fr">
+<head><title>Comcom maker</title>
+  <meta charset="utf-8" />
+<!--               < local compliant >                                -->
+<!--  <base href="http://localhost/comcom/" />-->
+<!--               < osm7 compliant >                                -->
+  <base href="http://osm7.openstreetmap.fr/~vincentpottier/comcom/" />
+
+  <script src="js/OpenLayers.js" ></script>
+  <script src="js/xregexp.js"  type="application/javascript"></script>
+  <script src="js/render-min.js"  type="application/javascript"></script>
+  <script src="js/overlays.js" type="application/javascript"></script>
+  <script src="js/comcom.js" type="application/javascript"></script>
+  <style>
+#info{
+  float:right;
+  height:600px;
+  width:-moz-calc(100% - 808px);
+  width:-webkit-calc(100% - 808px);
+  width:-o-calc(100% - 808px);
+  width:calc(100% - 808px);
+}
+#map{
+  width:800px;
+  height:600px;
+}
+h1{
+  margin:0;
+  font-size:1.2em;
+}
+h2{
+  margin:0;
+  font-size:1em;
+}
+ul{
+  font-size:small;
+  -moz-padding-start: 14px;
+  -webkit-padding-start: 14px;
+  -o-padding-start: 14px;
+  padding-start: 14px;
+  list-style-type:square;
+  -moz-column-count:2;
+  -webkit-column-count:2;
+  -o-column-count:2;
+  column-count:2;
+}
+table{width:100%}
+td{width:50%;}
+label.basic,
+.basic .expert{display:none}
+span.basic{display:none}
+.basic span.basic{display:inline}
+li::-moz-list-bullet{
+  font-size:small;
+  color:red;
+}
+#tagEditor-container{
+  display:none;
+  z-index:1000;
+}
+#tagEditor-mask{
+  position:absolute;
+  top:0px;
+  left:0px;
+  width:100%;
+  height:100%;
+  background-color:black;
+  opacity:0.5;
+  z-index:1100;
+}
+#tagEditor{
+  position:absolute;
+  background-color:white;
+  padding:24px 0px 0px 24px;
+  -moz-border-radius:12px;
+  border:gray 6px solid;
+  top:80px;
+  left:25%;
+  width:auto;
+  height:auto;
+  z-index:1200;
+}
+#tagEditor .toolbar{
+  text-align:right;
+  padding-right:24px;
+}
+.item a,
+tr img {
+  visibility:hidden;
+}
+.item:hover a,
+tr:hover img {
+  visibility:visible;
+}
+.olControlAttribution{
+  bottom:0.5em !important;
+}
+.basic label.basic {display:inline}
+  </style>
+</head>
+  <body onload="init();" class="basic">
+  <div id="info">
+    <div style="float:right">
+      <input type="checkbox" checked="checked"
+        id="ccDisplayOverlay"
+        onclick="map.ccm.resetOut()"
+        title="show/hide existing boundaries"
+        />
+      <label for="ccDisplayOverlay" title="show/hide existing boundaries">overlay</label>
+      <input type="checkbox" id="ccExpert"
+        onclick="document.body.className=this.checked ? '':'basic'"
+        accesskey="x"
+        title="mode Basique/Expert (b)"
+        />
+      <label class="expert" for="ccExpert" title="mode Expert (x)">expert</label>
+      <label class="basic" for="ccExpert" title="mode Basique (x)">basic</label>
+      <a href="http://wiki.openstreetmap.org/wiki/FR:ComcomMaker" target="_blank" title="aide">
+        <img src="js/images/silk/help.png" alt="help" />
+      </a>
+      <br />
+<!--      <input type="radio" name="out" id="out_JOSM" value="jsom"
+        class="expert"
+        accesskey="j"
+        checked="true"
+        title="Éditer dans JSOM (j)" />
+      <label for="out_JOSM" class="expert" title="Éditer dans JSOM (j)" >JOSM</label>
+      <input type="radio" name="out" id="out_RawEdit" value="jsom" 
+        class="expert"
+        accesskey="r"
+        title="Éditer dans RawEdit (r)" />
+      <label for="out_RawEdit" class="expert"title="Éditer dans RawEdit (r)" >RawEdit</label> -->
+    </div>
+    <h1>ComcomMaker</h1>
+    <table>
+      <tr>
+        <td>
+          <h2>Choisir</h2>
+          <select name="ccPresetsIn" onclick="map.ccm.tagsIn.value=this.options[this.selectedIndex].value.replace(/,/g,'\n')">
+            <optgroup label="Administation territoriale">
+              <option value="boundary=administrative,admin_level=8" selected="selected" >Commune</option>
+              <option value="boundary=administrative,admin_level=7" >Arrondissement</option>
+              <option value="boundary=administrative,admin_level=6" >Département</option>
+              <option value="boundary=political,political_division=circonscription_législative">Circonscriptions législatives</option>
+            </optgroup >
+            <optgroup label="Administation catholique" class="expert">
+<!--            <option value="boundary=local_authority,local_authority:FR=CC" class="expert" >Communauté de communes</option>-->
+<!--            <option value="boundary=local_authority,local_authority:FR=CA" class="expert" >Communauté d'agglomérations</option>-->
+<!--            <option value="boundary=local_authority,local_authority:FR=CU" >Communauté urbaine</option>-->
+<!--            <option value="boundary=election,election=cantonale" class="expert">Canton</option>-->
+              <option value="boundary=religious_administration,religion=christian,denomination=catholic,admin_level=8">Paroisse catholique</option>
+              <option value="boundary=religious_administration,religion=christian,denomination=catholic,admin_level=7">Zone pastorale catholique</option>
+              <option value="boundary=religious_administration,religion=christian,denomination=catholic,admin_level=6">Diocèse catholique</option>
+            </optgroup >
+          </select>
+<!--          <span class="basic" ><img src="js/images/silk/textfield_edit.png" alt="choice edit" title="Éditer les tags"/></span>-->
+          <textarea class="expert" id="ccTagsIn" style="width:100%;height:8em;" name="where" title="key=val 1 per line" >boundary=administrative
+admin_level=8</textarea>
+        </td>
+        <td>
+          <h2>Construire</h2>
+          <select name="ccPresetsOut" id="ccPresetsOut" onclick="map.ccm.resetOut(this.options[this.selectedIndex].value)">
+            <optgroup label="Colectivités territoriales">
+              <option value="type=boundary,boundary=administrative,admin_level=8" >Commune</option>
+              <option value="type=boundary,boundary=administrative,admin_level=7" >Arrondissement</option>
+              <option value="type=boundary,boundary=administrative,admin_level=6" >Département</option>
+              <option value="type=boundary,boundary=administrative,admin_level=4" >Région</option>
+            </optgroup >
+            <optgroup label="EPCI">
+              <option value="type=boundary,boundary=local_authority,local_authority:FR=CC" selected="selected" >Communauté de communes</option>
+              <option value="type=boundary,boundary=local_authority,local_authority:FR=CA" >Communauté d'agglomérations</option>
+              <option value="type=boundary,boundary=local_authority,local_authority:FR=CU" >Communauté urbaine</option>
+            </optgroup >
+            <optgroup label="Circonscriptions">
+              <option value="type=boundary,boundary=political,political_division=circonscription_législative">Circonscription législative</option>
+              <option value="type=boundary,boundary=political,political_division=canton" >Canton</option>
+            </optgroup >
+            <optgroup label="Administation catholique" class="expert">
+              <option value="type=boundary,boundary=religious_administration,religion=christian,denomination=catholic,admin_level=8">Paroisse catholique</option>
+              <option value="type=boundary,boundary=religious_administration,religion=christian,denomination=catholic,admin_level=7">Zone pastorale catholique</option>
+              <option value="type=boundary,boundary=religious_administration,religion=christian,denomination=catholic,admin_level=6">Diocèse catholique</option>
+              <option value="type=boundary,boundary=religious_administration,religion=christian,denomination=catholic,admin_level=4">Province ecclésiastique</option>
+            </optgroup >
+            <optgroup label="Autres relations" class="expert">
+              <option value="type=site" >Site</option>
+            </optgroup >
+          </select>
+          <span class="basic" onclick="map.ccm.editTags('Out')"><img src="js/images/silk/textfield_edit.png" alt="build edit" title="Éditer les tags"/></span>
+          <textarea class="expert" style="width:100%;height:8em;" id="ccTagsOut" name="tags" title="fixed tags 'key=val' 1 per line" >type=boundary
+boundary=local_authority
+local_authority:FR=CC</textarea>
+        </td>
+      </tr>
+    </table>
+    <h2>
+      <div style="float:right" id="itemCount">
+      </div>
+    Liste&nbsp;
+    <img id='displayRunningControl' src='js/images/loading_16.gif' style="display:none;"/></h2>
+    <ul id="ccList" ></ul>
+  <form enctype="text/plain" action="rmaker.py" method="post">
+    <h2 class="expert">&Eacute;léments</h2>
+    <textarea class="expert" id="ccRels" name="relations" style="width:100%;"></textarea>
+    <input type='button' accesskey="x" name="clear" value="effacer" disabled="yes" onclick="map.ccm.clearData()" />
+    <input type='button' accesskey="e" name="send" value="éditer" title="Envoyer les données et éditer la relation dans JOSM" disabled="yes" onclick="map.ccm.sendData();return false;" />
+    </form>
+  </div>
+  <div id="map" ></div>
+  <div id="tagEditor-container"><div id="tagEditor-mask"></div><div id="tagEditor"></div><table><tbody id="tmp"></tbody></table></div>
+  <iframe id="ccJosmRemote" style="display:none;"/>
+</body></html>

@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<osm version='0.6' generator='JOSM'>
+  <relation id='-3691' action='modify' visible='true'>
+    <member type='way' ref='33814733' role='' />
+    <member type='way' ref='33481711' role='' />
+    <member type='way' ref='85182217' role='' />
+    <member type='way' ref='33814584' role='' />
+    <member type='way' ref='85025131' role='' />
+    <member type='way' ref='33815442' role='' />
+    <member type='way' ref='33481839' role='' />
+    <member type='way' ref='33481835' role='' />
+    <member type='way' ref='33821018' role='' />
+    <member type='way' ref='33481733' role='' />
+    <member type='way' ref='33481730' role='' />
+    <member type='way' ref='33481737' role='' />
+    <member type='way' ref='33481728' role='' />
+    <member type='way' ref='33481724' role='' />
+    <member type='way' ref='33823369' role='' />
+    <member type='way' ref='34169255' role='' />
+    <member type='way' ref='33481693' role='' />
+    <member type='way' ref='33814583' role='' />
+    <tag k='admin_level' v='8' />
+    <tag k='boundary' v='administrative' />
+    <tag k='type' v='boundary' />
+  </relation>
+</osm>
